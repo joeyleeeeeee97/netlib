@@ -1,13 +1,17 @@
-#include "EventLooop.h"
+#include "EventLoop.h"
+#include "ThreadFunc.h"
 #include <assert.h>
+#include <poll.h>
 using namespace netlib;
+
 
 thread_local EventLoop* t_LoopInThisThread = 0;
 
-EventLoop::EventLoop() :looping(false),_tid(curThreadId()) {
-	LOG_TRACE << "EventLoop Created " << this << " in thread " << _tid;
+EventLoop::EventLoop() :looping(false) {
+	_tid = curThreadId();
+//	LOG_TRACE << "EventLoop Created " << this << " in thread " << _tid;
 	if (t_LoopInThisThread) {
-		LOG_FATAL << "Another EventLoop " << t_LoopInThisThread << " Exists in this Thread " << _tid;
+//		LOG_FATAL << "Another EventLoop " << t_LoopInThisThread << " Exists in this Thread " << _tid;
 	}
 	else {
 		t_LoopInThisThread = this;
@@ -26,6 +30,6 @@ void EventLoop::loop() {
 
 	::poll(NULL, 0, 5 * 1000);
 
-	LOG_TRACE << "EventLoop " << this << " stop looping ";
+//	LOG_TRACE << "EventLoop " << this << " stop looping ";
 	looping = false;
 }

@@ -7,13 +7,7 @@
 #include<thread>
 namespace netlib {
 	using ThreadId = std::thread::id;
-	
-	ThreadId curThreadId() {
-		thread_local static ThreadId cachedId = std::this_thread::get_id();
-		return cachedId;
-	}
-
-
+	ThreadId curThreadId();
 	class ThreadFunc : nocopyable {
 	public:
 		ThreadFunc() :t(), func(),started(false),joined(false) {
