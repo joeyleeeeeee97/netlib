@@ -1,14 +1,14 @@
 #include "EventLoop.h"
-#include "ThreadFunc.h"
+#include "Channel.h"
+#include "Poller.h"
 #include <assert.h>
-#include <poll.h>
 using namespace netlib;
 
 
 thread_local EventLoop* t_LoopInThisThread = 0;
 const int kPollTimeMs = 10000;
 
-EventLoop::EventLoop() :looping(false) {
+EventLoop::EventLoop() :looping(false), quit(false), poller(new Poller(this)) {
 	_tid = curThreadId();
 //	LOG_TRACE << "EventLoop Created " << this << " in thread " << _tid;
 	if (t_LoopInThisThread) {
@@ -33,20 +33,24 @@ void EventLoop::loop() {
 	while(!quit) {
 		activeChannels.clear();
 		poller->poll(kPollTimeMs,&activeChannels);
-		for(Channel* it : activeChannels){
+		for(Channel* it : activeChannels) {
 			it->handleEvent();
 		}
 	}
-//	LOG_TRACE << "EventLoop " << this << " stop looping ";
+//	LOG_TRACE << "EventLoop " << this << " stop looping "
 	looping = false;
 }
 
-void EventLoop::quit(){
+void EventLoop::quitloop(){
 	quit = true;
 }
 
-void EventLoop::updateChannel(Channel* channel){
+void EventLoop::updateChannel(Channel* channel) {
 	assert(channel->ownerLoop() == this);
 	assertInLoopThread();
-	poller.updateChannel(channel);
+	poller->updateChannel(channel);
 }
+
+
+
+

@@ -3,13 +3,17 @@
 #define _EVENTLOOP_H
 #include "nocopyable.h"
 #include <assert.h>
+//#include "Poller.h"
+//#include "Channel.h"
 #include "ThreadFunc.h"
-#include <pthread.h>
+//#include <pthread.h>
 #include <memory>
+#include <vector>
 
 namespace netlib {
 
 	class Poller;
+
 	class Channel;
 
 	class EventLoop : nocopyable {
@@ -18,7 +22,7 @@ namespace netlib {
 		~EventLoop();
 
 		void loop();
-		void quit();
+		void quitloop();
 
 		void updateChannel(Channel* channel);
 
@@ -32,12 +36,13 @@ namespace netlib {
 	private:
 		typedef std::vector<Channel*> ChannelVec;
 		std::unique_ptr<Poller> poller;
-		ChannelVec channels; 
+		ChannelVec activeChannels; 
 		ThreadId _tid;
 		bool looping;
 		bool quit;
 
 	};
+
 }
 
 
