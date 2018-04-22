@@ -6,6 +6,7 @@ using namespace netlib;
 
 
 thread_local EventLoop* t_LoopInThisThread = 0;
+const int kPollTimeMs = 10000;
 
 EventLoop::EventLoop() :looping(false) {
 	_tid = curThreadId();
@@ -27,9 +28,25 @@ void EventLoop::loop() {
 	assert(!looping);
 	assert(_tid == curThreadId());
 	looping = true;
-
-	::poll(NULL, 0, 5 * 1000);
-
+	quit = false;
+//	::poll(NULL, 0, 5 * 1000);
+	while(!quit) {
+		activeChannels.clear();
+		poller->poll(kPollTimeMs,&activeChannels);
+		for(Channel* it : activeChannels){
+			it->handleEvent();
+		}
+	}
 //	LOG_TRACE << "EventLoop " << this << " stop looping ";
 	looping = false;
+}
+
+void EventLoop::quit(){
+	quit = true;
+}
+
+void EventLoop::updateChannel(Channel* channel){
+	assert(channel->ownerLoop() == this);
+	assertInLoopThread();
+	poller.updateChannel(channel);
 }
