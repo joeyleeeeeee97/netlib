@@ -2,15 +2,16 @@
 #include "Channel.h"
 #include "Poller.h"
 #include <assert.h>
+#include "TimerQueue.h"
+#include <iostream>
 using namespace netlib;
 
 
 thread_local EventLoop* t_LoopInThisThread = 0;
 const int kPollTimeMs = 10000;
 
-EventLoop::EventLoop() :looping(false), quit(false), poller(new Poller(this)) {
-	_tid = curThreadId();
-//	LOG_TRACE << "EventLoop Created " << this << " in thread " << _tid;
+EventLoop::EventLoop() :looping(false), quit(false),_tid(curThreadId()), poller(new Poller(this)){//, timerQueue(new TimerQueue(this)) {
+	std::cout<<_tid<<std::endl;
 	if (t_LoopInThisThread) {
 //		LOG_FATAL << "Another EventLoop " << t_LoopInThisThread << " Exists in this Thread " << _tid;
 	}
@@ -32,7 +33,7 @@ void EventLoop::loop() {
 //	::poll(NULL, 0, 5 * 1000);
 	while(!quit) {
 		activeChannels.clear();
-		poller->poll(kPollTimeMs,&activeChannels);
+		pollReturnTime = poller->poll(kPollTimeMs,&activeChannels);
 		for(Channel* it : activeChannels) {
 			it->handleEvent();
 		}
@@ -47,10 +48,25 @@ void EventLoop::quitloop(){
 
 void EventLoop::updateChannel(Channel* channel) {
 	assert(channel->ownerLoop() == this);
-	assertInLoopThread();
+	std::cout<<_tid<<" and " << curThreadId()<<std::endl;
+	assert(_tid == curThreadId());
+//	assertInLoopThread();
 	poller->updateChannel(channel);
 }
 
+TimerId EventLoop::runAt(const Timestamp& time, const TimerCallback& cb){
+	return timerQueue->addTimer(cb, time, 0.0);
+}
+
+TimerId EventLoop::runAfter(double delay, const TimerCallback& cb){
+	Timestamp time(addTime(Timestamp::now(), delay));
+	return runAt(time, cb);
+	
+}
 
 
+TimerId EventLoop::runEvery(double Interval, const TimerCallback& cb) {
+	Timestamp time(addTime(Timestamp::now(), Interval));
+	return timerQueue->addTimer(cb, time, Interval);
 
+}
