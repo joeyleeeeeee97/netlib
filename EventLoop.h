@@ -12,11 +12,13 @@
 #include <memory>
 #include <functional>
 #include <vector>
+#include <mutex>
 
 namespace netlib {
 
 	typedef std::function<void()> TimerCallback;
-	
+	typedef std::function<void()> Functor;	
+
 	class Poller;
 
 	class Channel;
@@ -37,6 +39,14 @@ namespace netlib {
 			assert(isInLoopThread());
 		}
 
+		Timestamp pollReturntime() const {
+			return pollReturnTime;
+		}
+	
+		void runInLoop(const Functor& f);
+		void queueInLoop(const Functor& f);
+		
+
 		bool isInLoopThread() {
 			return _tid == curThreadId();
 		}
@@ -45,15 +55,27 @@ namespace netlib {
 		TimerId runAfter(double, const TimerCallback&);
 		TimerId runEvery(double, const TimerCallback&);
 
+		void wakeup();
+
 	private:
 		typedef std::vector<Channel*> ChannelVec;
-		std::unique_ptr<Poller> poller;
-		std::unique_ptr<TimerQueue> timerQueue;
-		Timestamp pollReturnTime;
-		ChannelVec activeChannels; 
-		ThreadId _tid;
+		
+		void handleRead();
+		void doPendingFunctors();
+		
+		
 		bool looping;
 		bool quit;
+		bool callPendingFunctors;
+		ThreadId _tid;
+		Timestamp pollReturnTime;
+		std::unique_ptr<Poller> poller;
+		std::unique_ptr<TimerQueue> timerQueue;
+		int wakeupFd;
+		std::unique_ptr<Channel> wakeupChannel;
+		ChannelVec activeChannels;
+		std::mutex lk;
+		std::vector<Functor> pendingFunctors;
 
 	};
 

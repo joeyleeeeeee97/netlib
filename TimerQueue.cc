@@ -55,26 +55,43 @@ using namespace netlib;
 TimerQueue::TimerQueue(EventLoop* _loop) : loop(_loop), timerfd(createTimerfd()), timerfdChannel(_loop, timerfd), timers(){
 	std::function<void()> f = std::bind(&TimerQueue::handleRead, this);
 	timerfdChannel.setReadCallBack(f);
-	std::cout<<"setTC";
+//	std::cout<<"setTC";
 	timerfdChannel.enableReading();
-	std::cout<<"Done";
+//	std::cout<<"Done";
 }
 
 TimerQueue::~TimerQueue(){
 	::close(timerfd);
 }
-
+/*
 TimerId TimerQueue::addTimer(const TimerCallback& cb, Timestamp when, double Interval) {
 	Timer* timer = new Timer(cb, when, Interval);
 	loop->assertInLoopThread();
-	std::unique_ptr<Timer> ptr(timer);
-	bool earliestChanged = insert(std::move(ptr));
+	std::shared_ptr<Timer> ptr(timer);
+	bool earliestChanged = insert(ptr);
 
 	if(earliestChanged) {
 		resetTimerfd(timerfd, timer->expiration());
 	}
 
 	return TimerId(timer);
+}
+*/
+
+TimerId TimerQueue::addTimer(const TimerCallback& cb, Timestamp when, double Interval) {
+	Timer* timer = new Timer(cb, when ,Interval);
+	std::function<void()> f = std::bind(&TimerQueue::addTimerInLoop, this , timer);
+	loop->runInLoop(f);
+	return TimerId(timer);
+}
+
+void TimerQueue::addTimerInLoop(Timer* timer) {
+	loop->assertInLoopThread();
+	std::shared_ptr<Timer> ptr(timer);
+	bool earliestChanged = insert(ptr);
+	if(earliestChanged) {
+		resetTimerfd(timerfd, timer->expiration());
+	}
 }
 
 void TimerQueue::handleRead(){
@@ -122,7 +139,7 @@ void TimerQueue::reset(std::vector<TimerQueue::Entry>& expired, Timestamp now) {
 }
 
 
-bool TimerQueue::insert(std::shared_ptr<Timer>&& ptr) {
+bool TimerQueue::insert(const std::shared_ptr<Timer>& ptr) {
 	bool flag = false;
 	Timestamp when = ptr->expiration();
 	if(timers.empty() || when < timers.begin()->first) {

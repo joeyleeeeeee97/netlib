@@ -3,25 +3,52 @@
 #include "Poller.h"
 #include <assert.h>
 #include "TimerQueue.h"
-#include <iostream>
+//#include <iostream>
+#include <functional>
+#include <sys/eventfd.h>
+#include <unistd.h>
+
 using namespace netlib;
 
 
 thread_local EventLoop* t_LoopInThisThread = 0;
 const int kPollTimeMs = 10000;
 
-EventLoop::EventLoop() :looping(false), quit(false),_tid(curThreadId()), poller(new Poller(this)){//, timerQueue(new TimerQueue(this)) {
-	std::cout<<_tid<<std::endl;
+
+
+static int createEventfd() {
+	int evtfd = ::eventfd(0, EFD_NONBLOCK | EFD_CLOEXEC);
+	assert(evtfd >= 0);
+	return evtfd;
+}
+
+
+
+
+
+EventLoop::EventLoop() :looping(false),
+			quit(false),
+			callPendingFunctors(false),
+			_tid(curThreadId()),
+			poller(new Poller(this)),
+			timerQueue(new TimerQueue(this)),
+			wakeupFd(createEventfd()),
+			wakeupChannel(new Channel(this, wakeupFd)) {
+//	std::cout<<_tid<<std::endl;
 	if (t_LoopInThisThread) {
 //		LOG_FATAL << "Another EventLoop " << t_LoopInThisThread << " Exists in this Thread " << _tid;
 	}
 	else {
 		t_LoopInThisThread = this;
 	}
+	std::function<void()> f = std::bind(&EventLoop::handleRead, this);
+	wakeupChannel->setReadCallBack(f);
+	wakeupChannel->enableReading();
 }
 
 EventLoop::~EventLoop() {
 	assert(!looping);
+	::close(wakeupFd);
 	t_LoopInThisThread = NULL;
 }
 
@@ -37,6 +64,7 @@ void EventLoop::loop() {
 		for(Channel* it : activeChannels) {
 			it->handleEvent();
 		}
+		doPendingFunctors();
 	}
 //	LOG_TRACE << "EventLoop " << this << " stop looping "
 	looping = false;
@@ -44,11 +72,34 @@ void EventLoop::loop() {
 
 void EventLoop::quitloop(){
 	quit = true;
+	if(!isInLoopThread()) {
+		wakeup();
+	}
 }
+
+void EventLoop::runInLoop(const Functor& cb) {
+	if(isInLoopThread()) {
+		cb();
+	}
+	else {
+		queueInLoop(cb);
+	}
+}
+
+void EventLoop::queueInLoop(const Functor& cb) {
+	{
+		std::lock_guard<std::mutex> lock(lk);
+		pendingFunctors.push_back(cb);
+	}
+	if(!isInLoopThread() || callPendingFunctors) {
+		wakeup();
+	}
+}
+
 
 void EventLoop::updateChannel(Channel* channel) {
 	assert(channel->ownerLoop() == this);
-	std::cout<<_tid<<" and " << curThreadId()<<std::endl;
+//	std::cout<<_tid<<" and " << curThreadId()<<std::endl;
 	assert(_tid == curThreadId());
 //	assertInLoopThread();
 	poller->updateChannel(channel);
@@ -68,5 +119,33 @@ TimerId EventLoop::runAfter(double delay, const TimerCallback& cb){
 TimerId EventLoop::runEvery(double Interval, const TimerCallback& cb) {
 	Timestamp time(addTime(Timestamp::now(), Interval));
 	return timerQueue->addTimer(cb, time, Interval);
+
+}
+
+void EventLoop::handleRead() {
+	uint64_t one = 1;
+	ssize_t n = ::read(wakeupFd, &one, sizeof(one));
+//	assert(n == sizeof one);
+}
+
+void EventLoop::wakeup() {
+	uint64_t one = 1;
+	ssize_t n = ::read(wakeupFd, &one ,sizeof(one));
+//	assert(n == sizeof one);
+
+}
+
+void EventLoop::doPendingFunctors() {
+	std::vector<Functor> funcs;
+	callPendingFunctors = true;
+	{
+		std::lock_guard<std::mutex> lock(lk);
+		std::swap(funcs,pendingFunctors);
+	}
+
+	for(auto& it : funcs) {
+		it();
+	}
+	callPendingFunctors = false;
 
 }

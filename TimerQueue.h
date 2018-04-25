@@ -29,12 +29,14 @@ private:
 	typedef std::pair<Timestamp, std::shared_ptr<Timer>> Entry;
 	typedef std::set<Entry> TimerList;
 
+	void addTimerInLoop(Timer* timer);
+	
 	void handleRead();
 	
 	std::vector<Entry> getExpired(Timestamp now);
 	void reset(std::vector<Entry>& expired, Timestamp now);
 
-	bool insert(std::shared_ptr<Timer>&& timer);
+	bool insert(const std::shared_ptr<Timer>& timer);
 	
 	EventLoop* loop;
 	const int timerfd;

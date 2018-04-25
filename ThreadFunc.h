@@ -16,10 +16,12 @@ namespace netlib {
 			func = std::move(other.func), t = std::move(other.t);
 			started = other.started, joined = other.joined;
 		}
+
 		template< class Function, class... Args >
 		explicit ThreadFunc(Function&& f, Args&&... args) : ThreadFunc() {
 			func = std::bind(f, args...);
 		}
+
 
 		ThreadFunc& operator=(ThreadFunc&& rhs) = default;
 
@@ -45,6 +47,12 @@ namespace netlib {
 			}
 			return false;
 		}
+
+		bool hasStarted() {
+			return started;
+		}		
+
+	
 	private:
 		std::function<void()> func;
 		bool started;
