@@ -1,3 +1,4 @@
+#include "InetAddress.h"
 #include "SocketsOps.h"
 
 #include <strings.h>  // bzero

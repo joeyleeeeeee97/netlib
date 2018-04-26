@@ -12,7 +12,7 @@ Socket::~Socket(){
 	sockets::close(sockfd);
 }
 
-void Socket::bindAddress(const InerAddress& addr) {
+void Socket::bindAddress(const InetAddress& addr) {
 	sockets::bindOrDie(sockfd, addr.getSockAddrInet());
 }
 

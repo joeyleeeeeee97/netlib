@@ -6,7 +6,8 @@ TESTS = test1 \
 	test3 \
 	test4 \
 	test5 \
-	test6 
+	test6 \
+	test7 
 
 all : $(TESTS)
 $(TESTS): $(HEADERS)
@@ -25,6 +26,8 @@ test4 : test/test4.cc EventLoop.cc ThreadFunc.cc Channel.cc Poller.cc Timestamp.
 test5 : test/test5.cc EventLoop.cc ThreadFunc.cc Channel.cc Poller.cc Timestamp.cc  TimerQueue.cc Timer.cc
 
 test6 : test/test6.cc EventLoop.cc ThreadFunc.cc Channel.cc Poller.cc Timestamp.cc  TimerQueue.cc Timer.cc EventLoopThread.cc
+
+test7 : test/test7.cc Socket.cc Acceptor.cc EventLoop.cc InetAddress.cc SocketsOps.cc ThreadFunc.cc Channel.cc Poller.cc Timestamp.cc  TimerQueue.cc Timer.cc
 
 clean:
 	rm -f $(TESTS)

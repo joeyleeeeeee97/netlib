@@ -46,9 +46,6 @@ void toHostPort(char* buf, size_t size,
 void fromHostPort(const char* ip, uint16_t port,
                   struct sockaddr_in* addr);
 
-
-
-
 }
 
 
