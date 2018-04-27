@@ -25,7 +25,7 @@ TcpConnection::~TcpConnection()
 
 void TcpConnection::connectEstablished() {
 	loop_->assertInLoopThread();
-	assert(state_ = kConnecting);
+	assert(state_ == kConnecting);
 	setState(kConnected);
 	channel_->enableReading();
 

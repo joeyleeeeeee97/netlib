@@ -14,7 +14,7 @@ all : $(TESTS)
 $(TESTS): $(HEADERS)
 
 $(TESTS):
-	g++ $(CXXFLAGS) -o $@ $(filter %.cc,$^) $(LDFLAGS) -lpthread -std=c++17
+	g++ $(CXXFLAGS) -o $@ $(filter %.cc,$^) $(LDFLAGS) -lpthread -std=c++11
 
 test1 : test/test1.cc EventLoop.cc ThreadFunc.cc Channel.cc Poller.cc Timestamp.cc TimerQueue.cc Timer.cc
 
