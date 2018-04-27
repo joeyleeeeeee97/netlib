@@ -7,13 +7,14 @@ TESTS = test1 \
 	test4 \
 	test5 \
 	test6 \
-	test7 
+	test7 \
+	test8 
 
 all : $(TESTS)
 $(TESTS): $(HEADERS)
 
 $(TESTS):
-	g++ $(CXXFLAGS) -o $@ $(filter %.cc,$^) $(LDFLAGS) -lpthread -std=c++11
+	g++ $(CXXFLAGS) -o $@ $(filter %.cc,$^) $(LDFLAGS) -lpthread -std=c++17
 
 test1 : test/test1.cc EventLoop.cc ThreadFunc.cc Channel.cc Poller.cc Timestamp.cc TimerQueue.cc Timer.cc
 
@@ -28,6 +29,8 @@ test5 : test/test5.cc EventLoop.cc ThreadFunc.cc Channel.cc Poller.cc Timestamp.
 test6 : test/test6.cc EventLoop.cc ThreadFunc.cc Channel.cc Poller.cc Timestamp.cc  TimerQueue.cc Timer.cc EventLoopThread.cc
 
 test7 : test/test7.cc Socket.cc Acceptor.cc EventLoop.cc InetAddress.cc SocketsOps.cc ThreadFunc.cc Channel.cc Poller.cc Timestamp.cc  TimerQueue.cc Timer.cc
+
+test8 : test/test8.cc Socket.cc Acceptor.cc EventLoop.cc InetAddress.cc SocketsOps.cc ThreadFunc.cc Channel.cc Poller.cc Timestamp.cc  TimerQueue.cc Timer.cc TcpConnection.cc TcpServer.cc
 
 clean:
 	rm -f $(TESTS)

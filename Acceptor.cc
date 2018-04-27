@@ -10,7 +10,7 @@ using namespace netlib;
 Acceptor::Acceptor(EventLoop* _loop, const InetAddress& listenAddr):loop(_loop),
 	acceptSocket(sockets::createNonblockingOrDie()),
 	acceptChannel(loop,acceptSocket.fd()),
-	listenning_(false){
+	listenning_(false) {
 	acceptSocket.setReuseAddr(true);
 	acceptSocket.bindAddress(listenAddr);
 	std::function<void()> f = std::bind(&Acceptor::handleRead, this);
