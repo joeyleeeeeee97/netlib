@@ -52,15 +52,15 @@ void TcpServer::newConnection(int sockfd, const InetAddress& peerAddr) {
 	connections[connName] = conn;
 	conn->setConnectionCallback(connectionCallback);
 	conn->setMessageCallback(messageCallback);
-	CloseCallback f = std::bind(&TcpServer::removeConnection, this , std::placeholder::_1);
+	CloseCallback f = std::bind(&TcpServer::removeConnection, this , std::placeholders::_1);
 	conn->setCloseCallback(f);
 	conn->connectEstablished();
 }
 
 void TcpServer::removeConnection(const TcpConnectionPtr& conn) {
-	loop_->assertInLoopThread();
-	size_t n = connections.erase(conn->name());
-	Functor f = std::bind(&TcpConnection::connectDestroyed, coon);
-	loop_->queueInLoop(f);
+	loop->assertInLoopThread();
+	connections.erase(conn->name());
+	Functor f = std::bind(&TcpConnection::connectDestroyed, conn);
+	loop->queueInLoop(f);
 
 }

@@ -51,7 +51,7 @@ void TcpConnection::connectDestroyed() {
 
 	closeCallback(shared_from_this());
 //	connectionCallback(shared_from_this());
-	loop->removeChannel(channel_.get());
+	loop_->removeChannel(channel_.get());
 }
 
 void TcpConnection::handleRead() {
@@ -73,13 +73,13 @@ void TcpConnection::handleRead() {
 void TcpConnection::handleWrite(){}
 
 void TcpConnection::handleClose() {
-	loop_->asserInLoopThread();
+	loop_->assertInLoopThread();
 	assert(state_ = kConnected);
 	channel_->disableAll();
 	closeCallback(shared_from_this());
 }
 
-void TcpConection::handleError() {
+void TcpConnection::handleError() {
 	int err = sockets::getSocketError(channel_->fd());
 //
 }

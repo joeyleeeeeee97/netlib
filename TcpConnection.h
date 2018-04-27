@@ -58,6 +58,7 @@ private:
 	}
 
 	void handleRead();
+	void handleWrite();
 	void handleClose();
 	void handleError();
 

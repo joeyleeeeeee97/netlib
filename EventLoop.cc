@@ -106,7 +106,7 @@ void EventLoop::updateChannel(Channel* channel) {
 }
 
 void EventLoop::removeChannel(Channel* channel) {
-	assert(channel->owenerLoop() == this);
+	assert(channel->ownerLoop() == this);
 	assert(_tid == curThreadId());
 	poller->removeChannel(channel);
 }
