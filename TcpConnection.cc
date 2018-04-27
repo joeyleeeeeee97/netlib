@@ -2,7 +2,7 @@
 #include "Channel.h"
 #include "EventLoop.h"
 #include "Socket.h"
-
+#include "SocketsOps.h"
 #include <functional>
 
 using namespace netlib;
@@ -15,7 +15,17 @@ TcpConnection::TcpConnection(EventLoop* _loop, const std::string& nameArg,
 	
 	std::function<void()> f = std::bind(&TcpConnection::handleRead, this);
 	channel_->setReadCallBack(f);
+	
+	f = std::bind(&TcpConnection::handleWrite, this);
+	channel_->setWriteCallBack(f);
+	
+	f = std::bind(&TcpConnection::handleClose, this);
+	channel_->setCloseCallBack(f);
+	
+	f = std::bind(&TcpConnection::handleClose, this);
+	channel_->setErrorCallBack(f);
 }
+
 
 TcpConnection::~TcpConnection()
 {
@@ -33,9 +43,43 @@ void TcpConnection::connectEstablished() {
 
 }
 
+void TcpConnection::connectDestroyed() {
+	loop_->assertInLoopThread();
+	assert(state_ == kConnected);
+	setState(kDisconnected);
+	channel_->disableAll();
+
+	closeCallback(shared_from_this());
+//	connectionCallback(shared_from_this());
+	loop->removeChannel(channel_.get());
+}
+
 void TcpConnection::handleRead() {
 	char buf[65535];
 	ssize_t n = :: read(channel_->fd(), buf, sizeof buf);
-	messageCallback(shared_from_this(), buf, n);
+	if(n > 0) {
+		messageCallback(shared_from_this(), buf, n);
+	}
+	else if (n == 0) {
+		handleClose();
+	}
+	else {
+		handleError();
+	}
 
+}
+
+//todo 
+void TcpConnection::handleWrite(){}
+
+void TcpConnection::handleClose() {
+	loop_->asserInLoopThread();
+	assert(state_ = kConnected);
+	channel_->disableAll();
+	closeCallback(shared_from_this());
+}
+
+void TcpConection::handleError() {
+	int err = sockets::getSocketError(channel_->fd());
+//
 }

@@ -10,6 +10,7 @@ namespace netlib {
 		typedef std::function<void()> EventCallBack;
 
 		Channel(EventLoop* _loop,int _fd);
+		~Channel();
 
 		void setReadCallBack(EventCallBack& cb){
 			readCallBack = cb;
@@ -22,6 +23,11 @@ namespace netlib {
 		void setErrorCallBack(EventCallBack& cb){
 			errorCallBack = cb;
 		}
+
+		void setCloseCallBack(const EventCallBack& cb) {
+			closeCallBack = cb;
+		}
+
 		void handleEvent();
 		int fd() {
 			return fd_;
@@ -43,6 +49,10 @@ namespace netlib {
 			events_ |= kReadEvent;
 			update();
 		}
+		void disableAll() {
+			events_ = kNoneEvent;
+			update();
+		}
 	
 	private:
 		void update();
@@ -56,10 +66,13 @@ namespace netlib {
 		int events_;
 		int revents;
 		int index_;
-	
+
+		bool eventHandling;	
+
 		EventCallBack readCallBack;
 		EventCallBack writeCallBack;
 		EventCallBack errorCallBack;
+		EventCallBack closeCallBack;
 	};
 
 }

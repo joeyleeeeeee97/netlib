@@ -15,6 +15,8 @@ namespace netlib{
         typedef std::function<void (const TcpConnectionPtr&,
                               const char* data,
                               ssize_t len)> MessageCallback;
+	typedef std::function<void (const TcpConnectionPtr&)> CloseCallback;
+
 
 }
 

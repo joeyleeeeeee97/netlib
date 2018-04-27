@@ -105,6 +105,12 @@ void EventLoop::updateChannel(Channel* channel) {
 	poller->updateChannel(channel);
 }
 
+void EventLoop::removeChannel(Channel* channel) {
+	assert(channel->owenerLoop() == this);
+	assert(_tid == curThreadId());
+	poller->removeChannel(channel);
+}
+
 TimerId EventLoop::runAt(const Timestamp& time, const TimerCallback& cb){
 	return timerQueue->addTimer(cb, time, 0.0);
 }

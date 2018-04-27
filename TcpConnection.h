@@ -39,12 +39,18 @@ public:
 		messageCallback = cb;
 	}
 
+	void setCloseCallback(const CloseCallback& cb) {
+		closeCallback = cb;
+
+	}
+	void connectDestroyed();	
 	void connectEstablished();
 private:
 
 	enum StateE {
 		kConnecting,
 		kConnected,
+		kDisconnected,
 	};
 
 	void setState(StateE s) {
@@ -52,6 +58,8 @@ private:
 	}
 
 	void handleRead();
+	void handleClose();
+	void handleError();
 
 	EventLoop* loop_;
 	std::string name_;
@@ -62,6 +70,7 @@ private:
 	InetAddress peerAddr_;
 	ConnectionCallback connectionCallback;
 	MessageCallback messageCallback;
+	CloseCallback closeCallback;
 };
 /*
 typedef std::shared_ptr<TcpConnection> TcpConnectionPtr;

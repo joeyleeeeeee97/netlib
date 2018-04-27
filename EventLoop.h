@@ -34,6 +34,7 @@ namespace netlib {
 		void quitloop();
 
 		void updateChannel(Channel* channel);
+		void removeChannel(Channel* channel);
 
 		void assertInLoopThread() {
 			assert(isInLoopThread());

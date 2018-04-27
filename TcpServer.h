@@ -30,6 +30,7 @@ private:
 	typedef std::map<std::string, TcpConnectionPtr> ConnectionMap;
 	
 	void newConnection(int sockfd, const InetAddress& peerAddr);
+	void removeConnection(const TcpConnectionPtr& );
 	
 	EventLoop* loop;
 	const std::string name;

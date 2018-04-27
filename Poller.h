@@ -21,7 +21,8 @@ public:
 	Timestamp poll(int timeoutMs, ChannelVec* activeChannels);
 
 	void updateChannel(Channel* channel);
-
+	void removeChannel(Channel* channel);
+	
 	void assertInLoopThread() {
 		ownerloop->assertInLoopThread();
 	}
