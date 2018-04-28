@@ -78,7 +78,7 @@ void TcpConnection::sendInLoop(const std::string& str) {
 	if(!channel_->isWriting() && outputBuffer_.readableBytes() == 0) {
 		nwrote = ::write(channel_->fd(), str.data(), str.size());
 		if(nwrote >= 0) {
-			assert(nwrote < str.size());
+			assert(nwrote <= str.size());
 		}
 		else {
 			nwrote = 0;
