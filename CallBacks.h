@@ -2,9 +2,12 @@
 #define _CALLBACKS_H
 #include<memory>
 #include<functional>
+#include"Timestamp.h"
 
 
 namespace netlib{
+
+	class Buffer;
 	class TcpConnection;
 	class InetAddress;
 
@@ -13,8 +16,8 @@ namespace netlib{
         typedef std::shared_ptr<TcpConnection> TcpConnectionPtr;
         typedef std::function<void (const TcpConnectionPtr&)> ConnectionCallback;
         typedef std::function<void (const TcpConnectionPtr&,
-                              const char* data,
-                              ssize_t len)> MessageCallback;
+                              Buffer*,
+			      Timestamp)> MessageCallback;
 	typedef std::function<void (const TcpConnectionPtr&)> CloseCallback;
 
 

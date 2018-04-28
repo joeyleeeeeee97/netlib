@@ -4,6 +4,7 @@
 #include "nocopyable.h"
 #include "Channel.h"
 #include "Socket.h"
+#include "Timestamp.h"
 #include <functional>
 
 namespace netlib{
@@ -29,7 +30,7 @@ public:
 
 private:
 	
-	void handleRead();
+	void handleRead(Timestamp);
 
 	EventLoop* loop;
 	Socket acceptSocket;

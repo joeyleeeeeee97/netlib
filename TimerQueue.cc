@@ -53,7 +53,7 @@ void resetTimerfd(int timerfd, Timestamp expiration)
 using namespace netlib;
 
 TimerQueue::TimerQueue(EventLoop* _loop) : loop(_loop), timerfd(createTimerfd()), timerfdChannel(_loop, timerfd), timers(){
-	std::function<void()> f = std::bind(&TimerQueue::handleRead, this);
+	std::function<void(Timestamp)> f = std::bind(&TimerQueue::handleRead, this, std::placeholders::_1);
 	timerfdChannel.setReadCallBack(f);
 //	std::cout<<"setTC";
 	timerfdChannel.enableReading();
@@ -94,7 +94,7 @@ void TimerQueue::addTimerInLoop(Timer* timer) {
 	}
 }
 
-void TimerQueue::handleRead(){
+void TimerQueue::handleRead(Timestamp t){
 	loop->assertInLoopThread();
 	Timestamp now(Timestamp::now());
 	readTimerfd(timerfd, now);

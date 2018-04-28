@@ -2,6 +2,7 @@
 #ifndef _TCPCONNECTION_H
 #define _TCPCONNECTION_H
 
+#include "Buffer.h"
 #include"InetAddress.h"
 #include"nocopyable.h"
 #include "CallBacks.h"
@@ -19,6 +20,11 @@ class TcpConnection : nocopyable, public std::enable_shared_from_this<TcpConnect
 public:
 	TcpConnection(EventLoop*,const std::string&, int sockfd, const InetAddress&,const InetAddress&);
 	~TcpConnection();
+
+	void send(const std::string&);
+//	void send(const char*, size_t);
+
+	void shutdown(); 
 
 	EventLoop* getLoop() const {
 		return loop_;
@@ -50,6 +56,7 @@ private:
 	enum StateE {
 		kConnecting,
 		kConnected,
+		kDisconnecting,
 		kDisconnected,
 	};
 
@@ -57,10 +64,15 @@ private:
 		state_ = s;
 	}
 
-	void handleRead();
+	void handleRead(Timestamp);
 	void handleWrite();
 	void handleClose();
 	void handleError();
+
+	//无法使用bind 绑定一个重载函数
+	void sendInLoop(const std::string&);
+//	void sendInLoop(const char*,size_t);
+	void shutdownInLoop();
 
 	EventLoop* loop_;
 	std::string name_;
@@ -72,6 +84,8 @@ private:
 	ConnectionCallback connectionCallback;
 	MessageCallback messageCallback;
 	CloseCallback closeCallback;
+	Buffer inputBuffer_;
+	Buffer outputBuffer_;
 };
 /*
 typedef std::shared_ptr<TcpConnection> TcpConnectionPtr;

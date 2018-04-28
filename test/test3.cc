@@ -1,3 +1,4 @@
+#include"../Timestamp.h"
 #include"../Channel.h"
 #include"../EventLoop.h"
 #include<unistd.h>
@@ -7,15 +8,16 @@
 #include<functional>
 netlib::EventLoop*  g_loop;
 
-void timeout(){
-	printf("Timeout\n");
+void timeout(netlib::Timestamp tt){
+	printf("%s Timeout\n", tt.toFormattedString().c_str());
 	g_loop->quitloop();
 }
 
 int main(){
+	printf("%s started\n", netlib::Timestamp::now().toFormattedString().c_str());
 	netlib::EventLoop el;
 	g_loop = &el;
-	std::function<void()> f(timeout);
+	std::function<void(netlib::Timestamp)> f(timeout);
 	int timerfd = ::timerfd_create(CLOCK_MONOTONIC, TFD_NONBLOCK | TFD_CLOEXEC);
   	
 	netlib::Channel channel(&el, timerfd);

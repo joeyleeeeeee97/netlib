@@ -41,7 +41,7 @@ EventLoop::EventLoop() :looping(false),
 	else {
 		t_LoopInThisThread = this;
 	}
-	std::function<void()> f = std::bind(&EventLoop::handleRead, this);
+	std::function<void(Timestamp)> f = std::bind(&EventLoop::handleRead, this, std::placeholders::_1);
 	wakeupChannel->setReadCallBack(f);
 	wakeupChannel->enableReading();
 }
@@ -62,7 +62,7 @@ void EventLoop::loop() {
 		activeChannels.clear();
 		pollReturnTime = poller->poll(kPollTimeMs,&activeChannels);
 		for(Channel* it : activeChannels) {
-			it->handleEvent();
+			it->handleEvent(pollReturnTime);
 		}
 		doPendingFunctors();
 	}
@@ -128,7 +128,7 @@ TimerId EventLoop::runEvery(double Interval, const TimerCallback& cb) {
 
 }
 
-void EventLoop::handleRead() {
+void EventLoop::handleRead(Timestamp) {
 	uint64_t one = 1;
 	ssize_t n = ::read(wakeupFd, &one, sizeof(one));
 //	assert(n == sizeof one);

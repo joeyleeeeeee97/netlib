@@ -20,6 +20,8 @@ public:
 
 	void listen();
 	
+	void shutdownWrite();
+		
 	int accept(InetAddress* peeraddr);
 
 	void setReuseAddr(bool on);

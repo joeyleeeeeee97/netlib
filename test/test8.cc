@@ -1,5 +1,6 @@
 #include "../TcpServer.h"
 #include "../EventLoop.h"
+#include "../Timestamp.h"
 #include "../InetAddress.h"
 #include <stdio.h>
 #include <unistd.h>
@@ -14,9 +15,14 @@ void onConnection(const netlib::TcpConnectionPtr& conn)
 	}
 }
 
-void onMessage(const netlib::TcpConnectionPtr& conn, const char* data, ssize_t len) {
+void onMessage(const netlib::TcpConnectionPtr& conn, netlib::Buffer* buf, netlib::Timestamp time) {
+	printf("onMessage(): received %zd bytes from connection [%s] at %s\n",
+         buf->readableBytes(),
+         conn->name().c_str(),
+         time.toFormattedString().c_str());
 
-	printf("On Message %s received %d \n", conn->name().c_str(), len);
+	printf("onMessage(): [%s]\n", buf->retrieveAsString().c_str());
+	//printf("On Message %s received %d \n", conn->name().c_str(), len);
 }
 
 int main() {

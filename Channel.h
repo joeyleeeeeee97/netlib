@@ -2,17 +2,20 @@
 #define _CHANNEL_H
 #include <functional>
 #include "nocopyable.h"
+#include "Timestamp.h"
+
 namespace netlib {
 	class EventLoop;
 
 	class Channel : nocopyable {
 	public:	
 		typedef std::function<void()> EventCallBack;
+		typedef std::function<void(Timestamp)> ReadEventCallBack;
 
 		Channel(EventLoop* _loop,int _fd);
 		~Channel();
 
-		void setReadCallBack(EventCallBack& cb){
+		void setReadCallBack(ReadEventCallBack& cb){
 			readCallBack = cb;
 		}
 
@@ -28,7 +31,7 @@ namespace netlib {
 			closeCallBack = cb;
 		}
 
-		void handleEvent();
+		void handleEvent(Timestamp receiveTime);
 		int fd() {
 			return fd_;
 		}
@@ -53,7 +56,21 @@ namespace netlib {
 			events_ = kNoneEvent;
 			update();
 		}
-	
+
+
+		void enableWriting() {
+			events_ |= kWriteEvent;
+			update();
+		}	
+
+		void disableWriting() {
+			events_ &= ~~kWriteEvent;
+			update();
+		}
+
+		bool isWriting() const {
+			return events_ & kWriteEvent;
+		}
 	private:
 		void update();
 
@@ -69,7 +86,7 @@ namespace netlib {
 
 		bool eventHandling;	
 
-		EventCallBack readCallBack;
+		ReadEventCallBack readCallBack;
 		EventCallBack writeCallBack;
 		EventCallBack errorCallBack;
 		EventCallBack closeCallBack;

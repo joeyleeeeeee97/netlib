@@ -61,7 +61,7 @@ namespace netlib {
 	private:
 		typedef std::vector<Channel*> ChannelVec;
 		
-		void handleRead();
+		void handleRead(Timestamp);
 		void doPendingFunctors();
 		
 		

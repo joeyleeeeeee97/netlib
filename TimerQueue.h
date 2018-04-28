@@ -31,7 +31,7 @@ private:
 
 	void addTimerInLoop(Timer* timer);
 	
-	void handleRead();
+	void handleRead(Timestamp);
 	
 	std::vector<Entry> getExpired(Timestamp now);
 	void reset(std::vector<Entry>& expired, Timestamp now);
