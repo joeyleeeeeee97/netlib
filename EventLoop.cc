@@ -7,6 +7,8 @@
 #include <functional>
 #include <sys/eventfd.h>
 #include <unistd.h>
+#include <signal.h>
+#include <iostream>
 
 using namespace netlib;
 
@@ -14,6 +16,14 @@ using namespace netlib;
 thread_local EventLoop* t_LoopInThisThread = 0;
 const int kPollTimeMs = 10000;
 
+class IgnoreSigPipe{ 
+public:
+	IgnoreSigPipe() {
+		::signal(SIGPIPE, SIG_IGN);
+	}
+};
+
+IgnoreSigPipe initObj;
 
 
 static int createEventfd() {
@@ -64,6 +74,7 @@ void EventLoop::loop() {
 		for(Channel* it : activeChannels) {
 			it->handleEvent(pollReturnTime);
 		}
+//		std::cout<<"wake up to do" <<std::endl;
 		doPendingFunctors();
 	}
 //	LOG_TRACE << "EventLoop " << this << " stop looping "
@@ -150,6 +161,7 @@ void EventLoop::doPendingFunctors() {
 	}
 
 	for(auto& it : funcs) {
+//		std::cout<<"DO!"<<std::endl;
 		it();
 	}
 	callPendingFunctors = false;

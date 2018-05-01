@@ -15,6 +15,8 @@ public:
 	int fd() const {
 		return sockfd;
 	} 
+
+	void setTcpNoDelay(bool);
 	
 	void bindAddress(const InetAddress& localaddr);
 

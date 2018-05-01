@@ -20,6 +20,7 @@ namespace netlib{
 			      Timestamp)> MessageCallback;
 	typedef std::function<void (const TcpConnectionPtr&)> CloseCallback;
 
+	typedef std::function<void (const TcpConnectionPtr&)> WriteCompleteCallback;
 
 }
 

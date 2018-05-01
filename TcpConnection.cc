@@ -5,6 +5,7 @@
 #include "SocketsOps.h"
 #include <functional>
 #include <string>
+#include <iostream>
 using namespace netlib;
 
 TcpConnection::TcpConnection(EventLoop* _loop, const std::string& nameArg,
@@ -72,13 +73,22 @@ void TcpConnection::send(const std::string& str) {
 }
 
 void TcpConnection::sendInLoop(const std::string& str) {
+	std::cout<<"In" <<std::endl;
+	
 	loop_->assertInLoopThread();
 	ssize_t nwrote = 0;
 
 	if(!channel_->isWriting() && outputBuffer_.readableBytes() == 0) {
 		nwrote = ::write(channel_->fd(), str.data(), str.size());
 		if(nwrote >= 0) {
-			assert(nwrote <= str.size());
+	//		std::cout<<"wrote " << nwrote << std::endl;
+		//	assert(nwrote <= str.size());
+			if(nwrote >= str.size() && writeCompleteCallback) {
+				Functor f = std::bind(writeCompleteCallback,shared_from_this());
+//				f();	
+				loop_->queueInLoop(f);
+	//			std::cout<< "queued " <<std::endl;
+			}
 		}
 		else {
 			nwrote = 0;
@@ -107,14 +117,20 @@ void TcpConnection::connectEstablished() {
 
 }
 
+void TcpConnection::setTcpNoDelay(bool on) {
+	socket_->setTcpNoDelay(on);
+}
+
 void TcpConnection::connectDestroyed() {
 	loop_->assertInLoopThread();
-	assert(state_ == kConnected);
+	std::cout<<kConnected<<std::endl;
+	std::cout<<state_<<std::endl;
+	assert(state_ == kConnected || state_ == kDisconnecting);//kDisConnecting);
 	setState(kDisconnected);
 	channel_->disableAll();
 
-	closeCallback(shared_from_this());
-//	connectionCallback(shared_from_this());
+//	closeCallback(shared_from_this());
+	connectionCallback(shared_from_this());
 	loop_->removeChannel(channel_.get());
 }
 
@@ -145,6 +161,10 @@ void TcpConnection::handleWrite() {
 			outputBuffer_.retrieve(n);
 			if(outputBuffer_.readableBytes() == 0) {
 				channel_->disableWriting();
+				if(writeCompleteCallback) {
+					Functor f = std::bind(writeCompleteCallback, shared_from_this());
+					loop_->queueInLoop(f);
+				}
 				if(state_ = kDisconnecting) {
 					shutdownInLoop();
 				}
@@ -155,7 +175,7 @@ void TcpConnection::handleWrite() {
 
 void TcpConnection::handleClose() {
 	loop_->assertInLoopThread();
-	assert(state_ = kConnected);
+	assert(state_ == kConnected || state_ == kDisconnecting);
 	channel_->disableAll();
 	closeCallback(shared_from_this());
 }

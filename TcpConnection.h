@@ -49,8 +49,16 @@ public:
 		closeCallback = cb;
 
 	}
+
+	void setTcpNoDelay(bool on);
+
 	void connectDestroyed();	
 	void connectEstablished();
+
+	void setWriteCompleteCallback(const WriteCompleteCallback& cb) {
+		writeCompleteCallback = cb;
+	}
+
 private:
 
 	enum StateE {
@@ -84,6 +92,7 @@ private:
 	ConnectionCallback connectionCallback;
 	MessageCallback messageCallback;
 	CloseCallback closeCallback;
+	WriteCompleteCallback writeCompleteCallback;
 	Buffer inputBuffer_;
 	Buffer outputBuffer_;
 };

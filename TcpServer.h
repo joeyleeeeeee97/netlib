@@ -26,6 +26,10 @@ public:
 	void setMessageCallback(const MessageCallback& cb) {
 		messageCallback = cb;
 	}
+
+	void setWriteCompleteCallback(const WriteCompleteCallback& cb) {
+		writeCompleteCallback = cb;
+	}
 private:
 	typedef std::map<std::string, TcpConnectionPtr> ConnectionMap;
 	
@@ -37,6 +41,7 @@ private:
 	std::unique_ptr<Acceptor> acceptor;
 	ConnectionCallback connectionCallback;
 	MessageCallback messageCallback;
+	WriteCompleteCallback writeCompleteCallback;
 	bool started;
 	int nextConnId;
 	ConnectionMap connections;	
