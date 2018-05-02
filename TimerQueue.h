@@ -25,12 +25,17 @@ public:
 	~TimerQueue();
 
 	TimerId addTimer(const TimerCallback& cb, Timestamp when, double Interval);
+	void cancel(TimerId);
 private:
 	typedef std::pair<Timestamp, std::shared_ptr<Timer>> Entry;
 	typedef std::set<Entry> TimerList;
+	typedef std::pair<std::shared_ptr<Timer>, int64_t> ActiveTimer;
+	typedef std::set<ActiveTimer> ActiveTimerSet;
+
 
 	void addTimerInLoop(Timer* timer);
-	
+	void cancelInLoop(TimerId);	
+
 	void handleRead(Timestamp);
 	
 	std::vector<Entry> getExpired(Timestamp now);
@@ -42,6 +47,10 @@ private:
 	const int timerfd;
 	Channel timerfdChannel;
 	TimerList timers;
+
+	bool callingExpiredTimers_;
+	ActiveTimerSet activeTimers_;
+	ActiveTimerSet cancelTimers_;
 
 };
 

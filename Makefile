@@ -11,7 +11,9 @@ TESTS = test1 \
 	test8 \
 	test9 \
 	test10 \
-	test11
+	test11\
+	test12\
+	test13
 
 all : $(TESTS)
 $(TESTS): $(HEADERS)
@@ -40,5 +42,9 @@ test9 : test/test9.cc Socket.cc Acceptor.cc EventLoop.cc InetAddress.cc SocketsO
 test10 : test/test10.cc Socket.cc Acceptor.cc EventLoop.cc InetAddress.cc SocketsOps.cc ThreadFunc.cc Channel.cc Poller.cc Timestamp.cc  TimerQueue.cc Timer.cc TcpConnection.cc TcpServer.cc Buffer.cc
 
 test11 : test/test11.cc Socket.cc Acceptor.cc EventLoop.cc InetAddress.cc SocketsOps.cc ThreadFunc.cc Channel.cc Poller.cc Timestamp.cc  TimerQueue.cc Timer.cc TcpConnection.cc TcpServer.cc Buffer.cc
+
+test12 : test/test12.cc Socket.cc Acceptor.cc EventLoop.cc InetAddress.cc SocketsOps.cc ThreadFunc.cc Channel.cc Poller.cc Timestamp.cc  TimerQueue.cc Timer.cc TcpConnection.cc TcpServer.cc Buffer.cc Connector.cc
+
+test13 : test/test13.cc Socket.cc Acceptor.cc EventLoop.cc InetAddress.cc SocketsOps.cc ThreadFunc.cc Channel.cc Poller.cc Timestamp.cc  TimerQueue.cc Timer.cc TcpConnection.cc TcpServer.cc Buffer.cc Connector.cc TcpClient.cc
 clean:
 	rm -f $(TESTS)

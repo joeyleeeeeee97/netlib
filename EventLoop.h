@@ -56,6 +56,8 @@ namespace netlib {
 		TimerId runAfter(double, const TimerCallback&);
 		TimerId runEvery(double, const TimerCallback&);
 
+		void cancel(TimerId timerId);		
+
 		void wakeup();
 
 	private:

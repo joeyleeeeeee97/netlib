@@ -15,8 +15,7 @@ void Timer::restart(Timestamp now)
 }
 
 
-
-
+AtomicInt64 Timer::s_numCreated_;
 
 
 

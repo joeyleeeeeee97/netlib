@@ -3,7 +3,7 @@
 #include "Timestamp.h"
 #include <memory>
 //#include "Callbacks.h"
-
+#include "Atomic.h"
 namespace netlib
 {
 
@@ -15,8 +15,9 @@ class Timer : nocopyable{
     : callback_(cb),
       expiration_(when),
       interval_(interval),
-      repeat_(interval > 0.0)
-  { }
+      repeat_(interval > 0.0),
+      sequence_(s_numCreated_.incrementAndGet())
+      { }
 
   void run() const
   {
@@ -27,12 +28,17 @@ class Timer : nocopyable{
   bool repeat() const { return repeat_; }
 
   void restart(Timestamp now);
+  int64_t sequence() const {
+	return sequence_;
+  }
 
  private:
   const TimerCallback callback_;
   Timestamp expiration_;
   const double interval_;
   const bool repeat_;
+  const int64_t sequence_;
+  static AtomicInt64 s_numCreated_;
 };
 
 }

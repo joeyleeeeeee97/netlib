@@ -13,8 +13,7 @@
 namespace netlib
 {
 	template<typename T>
-	class AtomicIntegerT : netlib::noncopyable
-	{
+	class AtomicIntegerT : nocopyable{
 	public:
 		AtomicIntegerT()
 			: value_(0)

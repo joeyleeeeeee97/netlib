@@ -7,12 +7,13 @@ class Timer;
 
 class TimerId {
 public:
-	explicit TimerId(Timer* timer) : value_(timer) {
+	explicit TimerId(Timer* timer = NULL, int64_t seq = 0) : value_(timer), seq_(seq) {
 		
 	}
+	friend class TimerQueue;
 private:
 	Timer* value_;
-
+	int64_t seq_;
 };
 
 }

@@ -139,6 +139,11 @@ TimerId EventLoop::runEvery(double Interval, const TimerCallback& cb) {
 
 }
 
+void EventLoop::cancel(TimerId timerId) {
+	return timerQueue->cancel(timerId);
+}
+
+
 void EventLoop::handleRead(Timestamp) {
 	uint64_t one = 1;
 	ssize_t n = ::read(wakeupFd, &one, sizeof(one));
