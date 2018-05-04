@@ -4,8 +4,11 @@
 #include <vector>
 #include <string>
 #include <algorithm>
-
+#include "SocketsOps.h"
 #include <assert.h>
+#include <unistd.h>
+#include <string.h>
+#include <iostream>
 
 namespace netlib {
 
@@ -50,9 +53,43 @@ public:
 		return cbegin() + readIndex;
 	}
 
+	int32_t peekInt32() {
+		int b32 = 0;
+		::memcpy(&b32, peek(), sizeof(int32_t));
+//		return ntohl(b32);
+		return sockets::networkToHost32(b32);
+	}
+
+	std::string peekAsString() {
+		std::string str(peek(), readableBytes());
+		return str;
+	}
+	
+	void retrieveInt32(){
+		retrieve(sizeof(int32_t));
+
+	}
+
+	int32_t readInt32(){
+		int32_t be32 = peekInt32();
+		retrieveInt32();
+		return be32;
+	}
+
+	void appendInt32(int32_t x)
+  	{
+    		int32_t be32 = sockets::hostToNetwork32(x);
+    		append(&be32, sizeof(int32_t));
+  	}
+
 	void retrieve(size_t len) {
-		assert(len < readableBytes());
-		readIndex += len;
+		assert(len <= readableBytes());
+		if(len == readableBytes()){
+			retrieveAll();
+		}
+		else {
+			readIndex += len;
+		}
 	}
 
 	void retrieveUntill(const char* End) {
@@ -78,7 +115,9 @@ public:
 	void append(const char* data, size_t len) {
 		ensureWritableBytes(len);
 		std::copy(data, data + len, beginWrite());
-		hasWritten(len);
+		writeIndex += len;//hasWritten(len);
+		assert(writeIndex != readIndex);
+		std::cout<<"!!!!!!!!!!!!!!!!!!!!!!!!!!!!"<<writeIndex<<std::endl;
 	}
 
 	void append(const void* data, size_t len) {

@@ -8,6 +8,7 @@
 #include "CallBacks.h"
 #include <boost/any.hpp>
 #include <memory>
+#include <string>
 
 namespace netlib{
 
@@ -22,8 +23,9 @@ public:
 	~TcpConnection();
 
 	void send(const std::string&);
-//	void send(const char*, size_t);
-
+	void send(const void* s , size_t l){
+		send(std::string(static_cast<const char*>(s), l));
+	}
 	void shutdown(); 
 
 	EventLoop* getLoop() const {
@@ -57,6 +59,18 @@ public:
 
 	void setWriteCompleteCallback(const WriteCompleteCallback& cb) {
 		writeCompleteCallback = cb;
+	}
+
+	void setContext(const boost::any& rhs) {
+		context_ = rhs;
+	}
+
+	const boost::any& getContext() const {
+		return context_;
+	}
+
+	boost::any* getMutableContext() {
+		return &context_;
 	}
 
 private:
@@ -95,6 +109,7 @@ private:
 	WriteCompleteCallback writeCompleteCallback;
 	Buffer inputBuffer_;
 	Buffer outputBuffer_;
+	boost::any context_;
 };
 /*
 typedef std::shared_ptr<TcpConnection> TcpConnectionPtr;

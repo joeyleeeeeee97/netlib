@@ -13,7 +13,10 @@ TESTS = test1 \
 	test10 \
 	test11\
 	test12\
-	test13
+	test13\
+	ttcp_client\
+	ttcp_server\
+	buf_test\
 
 all : $(TESTS)
 $(TESTS): $(HEADERS)
@@ -46,5 +49,12 @@ test11 : test/test11.cc Socket.cc Acceptor.cc EventLoop.cc InetAddress.cc Socket
 test12 : test/test12.cc Socket.cc Acceptor.cc EventLoop.cc InetAddress.cc SocketsOps.cc ThreadFunc.cc Channel.cc Poller.cc Timestamp.cc  TimerQueue.cc Timer.cc TcpConnection.cc TcpServer.cc Buffer.cc Connector.cc
 
 test13 : test/test13.cc Socket.cc Acceptor.cc EventLoop.cc InetAddress.cc SocketsOps.cc ThreadFunc.cc Channel.cc Poller.cc Timestamp.cc  TimerQueue.cc Timer.cc TcpConnection.cc TcpServer.cc Buffer.cc Connector.cc TcpClient.cc
+
+ttcp_client : test/ttcp_client.cc Socket.cc Acceptor.cc EventLoop.cc InetAddress.cc SocketsOps.cc ThreadFunc.cc Channel.cc Poller.cc Timestamp.cc  TimerQueue.cc Timer.cc TcpConnection.cc TcpServer.cc Buffer.cc Connector.cc TcpClient.cc
+
+ttcp_server : test/ttcp_server.cc Socket.cc Acceptor.cc EventLoop.cc InetAddress.cc SocketsOps.cc ThreadFunc.cc Channel.cc Poller.cc Timestamp.cc  TimerQueue.cc Timer.cc TcpConnection.cc TcpServer.cc Buffer.cc
+
+buf_test : test/Buffer_test.cc Buffer.cc
+
 clean:
 	rm -f $(TESTS)

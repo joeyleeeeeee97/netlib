@@ -73,7 +73,7 @@ void TcpConnection::send(const std::string& str) {
 }
 
 void TcpConnection::sendInLoop(const std::string& str) {
-	std::cout<<"In" <<std::endl;
+//	std::cout<<"In" <<std::endl;
 	
 	loop_->assertInLoopThread();
 	ssize_t nwrote = 0;
