@@ -9,6 +9,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <iostream>
+#include <algorithm>
 
 namespace netlib {
 
@@ -18,7 +19,16 @@ public:
 	static const int kInitialSize = 1024;
 	
 	Buffer(): buffer_(kCheapPrepend + kInitialSize), readIndex(kCheapPrepend), writeIndex(kCheapPrepend) {}
+
+	const char* findCRLF(const char* start) const {
+		const char* crlf = std::search(start , beginWrite(), kCRLF, kCRLF + 2);
+		return crlf == beginWrite()? NULL : crlf; 
+	}
 	
+	const char* findCRLF(const char* start) {
+		const char* crlf = std::search(start , cbeginWrite(), kCRLF, kCRLF + 2);
+		return crlf == beginWrite()? NULL : crlf; 
+	}
 	void swap(Buffer& rhs){
 		buffer_.swap(rhs.buffer_);
 		std::swap(readIndex, rhs.readIndex);
@@ -44,7 +54,10 @@ public:
 	char* beginWrite() {
 		return begin() + writeIndex;
 	}	
-	
+
+	const char* cbeginWrite() {
+		return static_cast<const char*>(beginWrite());
+	}	
 	const char* beginWrite() const {
 		return cbegin() + writeIndex;
 	}
@@ -117,7 +130,7 @@ public:
 		std::copy(data, data + len, beginWrite());
 		writeIndex += len;//hasWritten(len);
 		assert(writeIndex != readIndex);
-		std::cout<<"!!!!!!!!!!!!!!!!!!!!!!!!!!!!"<<writeIndex<<std::endl;
+//		std::cout<<"!!!!!!!!!!!!!!!!!!!!!!!!!!!!"<<writeIndex<<std::endl;
 	}
 
 	void append(const void* data, size_t len) {
@@ -169,7 +182,7 @@ private:
 
 	}
 
-
+	static const char* kCRLF;
 
 	std::vector<char> buffer_;
 	size_t readIndex;

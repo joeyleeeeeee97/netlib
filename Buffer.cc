@@ -6,6 +6,9 @@
 
 using namespace netlib;
 
+const char* Buffer::kCRLF = "\r\n";
+
+
 ssize_t Buffer::readFd(int fd, int* saveErrno) {
 	char extrabuf[65535];
 	struct iovec vec[2];

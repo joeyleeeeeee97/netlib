@@ -17,6 +17,9 @@ TESTS = test1 \
 	ttcp_client\
 	ttcp_server\
 	buf_test\
+	netcat\
+	memcached\
+	mem_test\
 
 all : $(TESTS)
 $(TESTS): $(HEADERS)
@@ -55,6 +58,12 @@ ttcp_client : test/ttcp_client.cc Socket.cc Acceptor.cc EventLoop.cc InetAddress
 ttcp_server : test/ttcp_server.cc Socket.cc Acceptor.cc EventLoop.cc InetAddress.cc SocketsOps.cc ThreadFunc.cc Channel.cc Poller.cc Timestamp.cc  TimerQueue.cc Timer.cc TcpConnection.cc TcpServer.cc Buffer.cc
 
 buf_test : test/Buffer_test.cc Buffer.cc
+
+netcat : test/netcat.cc Socket.cc Acceptor.cc EventLoop.cc InetAddress.cc SocketsOps.cc ThreadFunc.cc Channel.cc Poller.cc Timestamp.cc  TimerQueue.cc Timer.cc TcpConnection.cc TcpServer.cc Buffer.cc TcpClient.cc Connector.cc 
+
+memcached : test/mem_server.cc Socket.cc Acceptor.cc EventLoop.cc InetAddress.cc SocketsOps.cc ThreadFunc.cc Channel.cc Poller.cc Timestamp.cc  TimerQueue.cc Timer.cc TcpConnection.cc TcpServer.cc Buffer.cc MemSession.cc
+
+mem_test : test/mem_client.cc Socket.cc Acceptor.cc EventLoop.cc InetAddress.cc SocketsOps.cc ThreadFunc.cc Channel.cc Poller.cc Timestamp.cc  TimerQueue.cc Timer.cc TcpConnection.cc TcpClient.cc Buffer.cc MemSession.cc Connector.cc
 
 clean:
 	rm -f $(TESTS)
