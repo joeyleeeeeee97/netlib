@@ -58,6 +58,7 @@ void Session::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp tim
 				
 
 	}
+	conn->shutdown();
 }
 
 
