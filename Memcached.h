@@ -102,7 +102,7 @@ public:
 		std::lock_guard<std::mutex> lk(mtx);
 		auto it = table.find(key);
 		if (it != table.end()) {
-			auto val = it->second.data->val;
+		//	auto val = it->second.data->val;
 			it->second.detachFromList();
 			it->second.appendAftHead(&head);//调整到LRU首端
 			return { true, it->second.data };
