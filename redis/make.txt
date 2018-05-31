@@ -1,2 +1,0 @@
-g++ -g -Wall -rdynamic -march=native -O2 -o test2 test/test2.cc sds.cc dataBase.cc Timestamp.cc dict.cc hashTable.cc dictEntry.cc dictData.cc  -lpthread -std=c++11
-Makefile:11: recipe for target 'test2' failed
