@@ -24,6 +24,10 @@ dataBase::~dataBase(){
 
 }
 
+
+
+
+
 bool dataBase::operator==(const dataBase& rhs) {
 	return funcmap.equal(*this,rhs);
 }

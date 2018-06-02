@@ -65,3 +65,7 @@ size_t funcMap::hash(const dataBase& l){
 size_t funcMap::hash(const dataBase& l) const{
 	return const_cast<funcMap*>(this)->hash(l);
 }
+
+
+
+

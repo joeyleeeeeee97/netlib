@@ -12,6 +12,7 @@ namespace netlib{
 class funcMap;
 
 
+
 class dataBase{
 public:
 
@@ -32,9 +33,14 @@ public:
 	}
 
 	bool operator==(const dataBase& rhs);
+
+
 	size_t hash();
 	size_t hash() const;	
+
 //	virtual dataBase() = 0;
+
+
 	~dataBase();
 
 	bool expired();
@@ -62,6 +68,12 @@ typedef std::shared_ptr<dataBase> dataPtr;
 //typedef std::function<size_t(const dataBase&,const dataBase&)> hashFunc;
 
 
+struct hash_value{
+	size_t operator()(const dataBase& db) const {
+		return db.hash();
+	} 
+	
+};
 
 }
 
