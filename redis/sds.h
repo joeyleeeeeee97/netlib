@@ -18,7 +18,7 @@ class StringPiece{
 public:
 	StringPiece(const char*);
 	StringPiece(const StringPiece&);
-
+	StringPiece(const std::string&);
 
 	~StringPiece(){
 		std::free(data_);

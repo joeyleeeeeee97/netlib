@@ -56,9 +56,7 @@ using namespace netlib;
 TimerQueue::TimerQueue(EventLoop* _loop) : loop(_loop), timerfd(createTimerfd()), timerfdChannel(_loop, timerfd), timers(), callingExpiredTimers_(false){
 	std::function<void(Timestamp)> f = std::bind(&TimerQueue::handleRead, this, std::placeholders::_1);
 	timerfdChannel.setReadCallBack(f);
-//	std::cout<<"setTC";
 	timerfdChannel.enableReading();
-//	std::cout<<"Done";
 }
 
 TimerQueue::~TimerQueue(){

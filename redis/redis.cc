@@ -79,7 +79,7 @@ void redisServer::watch(const dataBase& key,const weakSessionPtr& wptr){
 	blocking_keys[key].push_back(wptr);
 }
 
-void handleBlockingKeys() {
+void redisServer::handleBlockingKeys() {
 	for(auto& it : ready_list) {
 		weakSessionList& l = blocking_keys[it];
 		if(l.emtpy()){

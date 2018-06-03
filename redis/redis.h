@@ -42,7 +42,7 @@ public:
 	//Asyn
 	dataBase bpop()	
 	
-	void watch();
+	void watch(const dataBase&, const weakSessionPtr&);
 	
 	void handleBlokingKeys();
 

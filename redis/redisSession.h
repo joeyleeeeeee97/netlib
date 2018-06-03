@@ -21,14 +21,26 @@ class dict;
 class dataBase;
 class redisServer;
 
-class redisSession : public nocopyable {
+class redisSession : public nocopyable , public std::enable_shared_from_this<redisSession>{
 
 public:
 	enum State_ {
 		QUEUE,
 		EXEC,
-		PENDING,
 		DIRTY_STATE,
+	};
+
+	enum Command_{
+		GET,
+		SET,
+		PUSH,
+		POP,
+		BPOP,
+		MULTI,
+		EXEC,
+		WATCH,
+		DISCARD,
+		DATA,
 	};
 
 	redisSession(const std::shared_ptr<redisServer>&,const TcpConnection&);
@@ -44,6 +56,10 @@ public:
 
 	void wakeup();
 	void wait();
+
+	Command_ parse(const std::string&);
+	bool checkCommand(Command_);	
+	void comDispatcher(Command_);
 
 	void setState(State_ s) {
 		state_ = s;
@@ -61,7 +77,6 @@ private:
 	std::shared_ptr<redisServer> server_;
 
 	std::queue<std::function<void()>> func_queue;
-	std::function<void()> pending_func;
 };
 
 

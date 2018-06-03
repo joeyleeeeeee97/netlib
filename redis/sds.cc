@@ -20,6 +20,9 @@ StringPiece::StringPiece(const StringPiece& rhs){
 	
 }
 
+StringPiece::StrignPiece(const std::string& rhs):this(rhs.c_str()){}
+
+
 void StringPiece::append(const StringPiece& rhs){
 	size_t size = size_ + rhs.size();
 	size_t cap = cap_;
