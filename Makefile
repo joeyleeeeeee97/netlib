@@ -1,7 +1,8 @@
 CXXFLAGS=-g -Wall -rdynamic -march=native
 CXXFLAGS+=-O2
 HEADERS=$(wildcard *.h)
-TESTS = test1 \
+TESTS = test0 \
+	test1 \
 	test2 \
 	test3 \
 	test4 \
@@ -26,6 +27,7 @@ $(TESTS): $(HEADERS)
 
 $(TESTS):
 	g++ $(CXXFLAGS) -o $@ $(filter %.cc,$^) $(LDFLAGS) -lpthread -std=c++11
+
 
 test1 : test/test1.cc EventLoop.cc ThreadFunc.cc Channel.cc Poller.cc Timestamp.cc TimerQueue.cc Timer.cc
 

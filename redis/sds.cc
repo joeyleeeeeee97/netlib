@@ -2,7 +2,7 @@
 #include"dataBase.h"
 #include"funcTable.h"
 #include<memory>
-
+#include<string>
 
 using namespace netlib;
 
@@ -20,7 +20,11 @@ StringPiece::StringPiece(const StringPiece& rhs){
 	
 }
 
-StringPiece::StrignPiece(const std::string& rhs):this(rhs.c_str()){}
+StringPiece::StringPiece(const std::string& rhs){
+	data_ = static_cast<char*>(std::malloc(rhs.size()));
+	strcpy(data_, rhs.c_str());
+	size_ = cap_ = rhs.size();
+}
 
 
 void StringPiece::append(const StringPiece& rhs){

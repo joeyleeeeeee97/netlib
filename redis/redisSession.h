@@ -15,7 +15,7 @@
 #include<queue>
 
 
-class netlib{
+namespace netlib{
 
 class dict;
 class dataBase;

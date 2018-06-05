@@ -7,6 +7,7 @@
 #include"../TcpServer.h"
 #include"../EventLoop.h"
 #include"../TcpServer.h"
+#include"redisSession.h"
 #include <mutex>
 #include <thread>
 #include <memory>
@@ -21,6 +22,7 @@ typedef std::shared_ptr<redisSession> SessionPtr;
 typedef std::weak_ptr<redisSession> weakSessionPtr;
 
 class dict;
+
 
 //single thread
 class redisServer : std::enable_shared_from_this<redisServer> {
