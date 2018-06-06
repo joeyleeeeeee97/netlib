@@ -3,12 +3,10 @@
 #include "Poller.h"
 #include <assert.h>
 #include "TimerQueue.h"
-//#include <iostream>
 #include <functional>
 #include <sys/eventfd.h>
 #include <unistd.h>
 #include <signal.h>
-#include <iostream>
 
 using namespace netlib;
 

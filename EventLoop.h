@@ -5,10 +5,7 @@
 #include "nocopyable.h"
 #include <assert.h>
 #include "TimerId.h"
-//#include "Poller.h"
-//#include "Channel.h"
 #include "ThreadFunc.h"
-//#include <pthread.h>
 #include <memory>
 #include <functional>
 #include <vector>

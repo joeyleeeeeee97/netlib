@@ -1,7 +1,4 @@
 #pragma once
-#ifndef THREADPOOL_H
-#define THREADPOOL_H
-
 #ifndef THREAD_POOL_H
 #define THREAD_POOL_H
 
@@ -14,6 +11,9 @@
 #include <future>
 #include <functional>
 #include <stdexcept>
+
+namespace netlib{
+
 class ThreadPool
 {
 public:
@@ -86,13 +86,14 @@ inline ThreadPool::~ThreadPool()
 	{
 		std::unique_lock<std::mutex> lock(queue_mutex);
 		stop = true;
-	}
-	condition.notify_all();
+	}	condition.notify_all();
 	for (std::thread& worker : workers)
 	{
 		worker.join();
 	}
 }
+
+
+}
 #endif
 
-#endif

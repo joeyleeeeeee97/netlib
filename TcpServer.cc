@@ -5,7 +5,6 @@
 
 #include <functional>
 #include <stdio.h>
-#include <iostream>
 
 using namespace netlib;
 
@@ -40,11 +39,11 @@ void TcpServer::newConnection(int sockfd, const InetAddress& peerAddr) {
 	snprintf(buf , sizeof buf, "#%d", nextConnId);
 	++nextConnId;
 	std::string connName = name + buf;
-
+/*
 	std::cout  << "TcpServer::newConnection [" << name
            << "] - new connection [" << connName
            << "] from " << peerAddr.toHostPort();
-	
+*/	
 	InetAddress localAddr(sockets::getLocalAddr(sockfd));
 	
 	TcpConnectionPtr conn(new TcpConnection(loop,connName, sockfd, localAddr, peerAddr));

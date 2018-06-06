@@ -7,7 +7,7 @@
 using namespace netlib;
 
 const char* Buffer::kCRLF = "\r\n";
-
+const char* Buffer::LINE = "\n";
 
 ssize_t Buffer::readFd(int fd, int* saveErrno) {
 	char extrabuf[65535];

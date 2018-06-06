@@ -1,8 +1,7 @@
 CXXFLAGS=-g -Wall -rdynamic -march=native
 CXXFLAGS+=-O2
 HEADERS=$(wildcard *.h)
-TESTS = test0 \
-	test1 \
+TESTS = test1 \
 	test2 \
 	test3 \
 	test4 \
@@ -21,6 +20,11 @@ TESTS = test0 \
 	netcat\
 	memcached\
 	mem_test\
+	chat_server_v1\
+	chat_server_v2\
+	chat_client\
+	chat_client_v2\
+
 
 all : $(TESTS)
 $(TESTS): $(HEADERS)
@@ -66,6 +70,16 @@ netcat : test/netcat.cc Socket.cc Acceptor.cc EventLoop.cc InetAddress.cc Socket
 memcached : test/mem_server.cc Socket.cc Acceptor.cc EventLoop.cc InetAddress.cc SocketsOps.cc ThreadFunc.cc Channel.cc Poller.cc Timestamp.cc  TimerQueue.cc Timer.cc TcpConnection.cc TcpServer.cc Buffer.cc MemSession.cc
 
 mem_test : test/mem_client.cc Socket.cc Acceptor.cc EventLoop.cc InetAddress.cc SocketsOps.cc ThreadFunc.cc Channel.cc Poller.cc Timestamp.cc  TimerQueue.cc Timer.cc TcpConnection.cc TcpClient.cc Buffer.cc MemSession.cc Connector.cc
+
+
+chat_server_v1 : test/chat_server_v1.cc Socket.cc Acceptor.cc EventLoop.cc InetAddress.cc SocketsOps.cc ThreadFunc.cc Channel.cc Poller.cc Timestamp.cc  TimerQueue.cc Timer.cc TcpConnection.cc TcpServer.cc Buffer.cc 
+
+chat_server_v2 : test/chat_server_v2.cc Socket.cc Acceptor.cc EventLoop.cc InetAddress.cc SocketsOps.cc ThreadFunc.cc Channel.cc Poller.cc Timestamp.cc  TimerQueue.cc Timer.cc TcpConnection.cc TcpServer.cc Buffer.cc 
+
+chat_client: test/chat_client.cc Socket.cc Acceptor.cc EventLoop.cc InetAddress.cc SocketsOps.cc ThreadFunc.cc Channel.cc Poller.cc Timestamp.cc  TimerQueue.cc Timer.cc TcpConnection.cc TcpServer.cc Buffer.cc TcpClient.cc Connector.cc 
+
+
+chat_client_v2: test/chat_client02.cc Socket.cc Acceptor.cc EventLoop.cc InetAddress.cc SocketsOps.cc ThreadFunc.cc Channel.cc Poller.cc Timestamp.cc  TimerQueue.cc Timer.cc TcpConnection.cc TcpServer.cc Buffer.cc TcpClient.cc Connector.cc 
 
 clean:
 	rm -f $(TESTS)

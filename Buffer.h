@@ -8,7 +8,6 @@
 #include <assert.h>
 #include <unistd.h>
 #include <string.h>
-#include <iostream>
 #include <algorithm>
 
 namespace netlib {
@@ -29,6 +28,16 @@ public:
 		const char* crlf = std::search(start , cbeginWrite(), kCRLF, kCRLF + 2);
 		return crlf == beginWrite()? NULL : crlf; 
 	}
+
+	const char* findLINE(const char* start) const {
+		const char* ENDL = std::search(start, beginWrite(), LINE, LINE + 1);
+		return ENDL == beginWrite()? NULL : ENDL;
+	}
+
+	const char* findLINE(const char* start) {
+		return const_cast<const Buffer*>(this)->findLINE(start);
+	}
+
 	void swap(Buffer& rhs){
 		buffer_.swap(rhs.buffer_);
 		std::swap(readIndex, rhs.readIndex);
@@ -183,6 +192,7 @@ private:
 	}
 
 	static const char* kCRLF;
+	static const char* LINE;	
 
 	std::vector<char> buffer_;
 	size_t readIndex;
