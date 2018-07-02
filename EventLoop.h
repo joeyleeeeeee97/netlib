@@ -76,7 +76,7 @@ namespace netlib {
 		ChannelVec activeChannels;
 		std::mutex lk;
 		std::vector<Functor> pendingFunctors;
-
+    
 	};
 
 }

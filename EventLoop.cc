@@ -145,13 +145,11 @@ void EventLoop::cancel(TimerId timerId) {
 void EventLoop::handleRead(Timestamp) {
 	uint64_t one = 1;
 	ssize_t n = ::read(wakeupFd, &one, sizeof(one));
-//	assert(n == sizeof one);
 }
 
 void EventLoop::wakeup() {
 	uint64_t one = 1;
-	ssize_t n = ::read(wakeupFd, &one ,sizeof(one));
-//	assert(n == sizeof one);
+	ssize_t n = ::write(wakeupFd, &one ,sizeof(one));
 
 }
 
