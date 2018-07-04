@@ -14,6 +14,7 @@ TESTS = test1 \
 	test11\
 	test12\
 	test13\
+	test14\
 	ttcp_client\
 	ttcp_server\
 	buf_test\
@@ -58,6 +59,8 @@ test11 : test/test11.cc Socket.cc Acceptor.cc EventLoop.cc InetAddress.cc Socket
 test12 : test/test12.cc Socket.cc Acceptor.cc EventLoop.cc InetAddress.cc SocketsOps.cc ThreadFunc.cc Channel.cc Poller.cc Timestamp.cc  TimerQueue.cc Timer.cc TcpConnection.cc TcpServer.cc Buffer.cc Connector.cc
 
 test13 : test/test13.cc Socket.cc Acceptor.cc EventLoop.cc InetAddress.cc SocketsOps.cc ThreadFunc.cc Channel.cc Poller.cc Timestamp.cc  TimerQueue.cc Timer.cc TcpConnection.cc TcpServer.cc Buffer.cc Connector.cc TcpClient.cc
+
+test14 : test/test14.cc Socket.cc Acceptor.cc EventLoop.cc InetAddress.cc SocketsOps.cc ThreadFunc.cc Channel.cc Poller.cc Timestamp.cc  TimerQueue.cc Timer.cc TcpConnection.cc TcpServer.cc Buffer.cc Connector.cc TcpClient.cc
 
 ttcp_client : test/ttcp_client.cc Socket.cc Acceptor.cc EventLoop.cc InetAddress.cc SocketsOps.cc ThreadFunc.cc Channel.cc Poller.cc Timestamp.cc  TimerQueue.cc Timer.cc TcpConnection.cc TcpServer.cc Buffer.cc Connector.cc TcpClient.cc
 

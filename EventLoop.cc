@@ -30,10 +30,6 @@ static int createEventfd() {
 	return evtfd;
 }
 
-
-
-
-
 EventLoop::EventLoop() :looping(false),
 			quit(false),
 			callPendingFunctors(false),
@@ -42,10 +38,9 @@ EventLoop::EventLoop() :looping(false),
 			timerQueue(new TimerQueue(this)),
 			wakeupFd(createEventfd()),
 			wakeupChannel(new Channel(this, wakeupFd)) {
-//	std::cout<<_tid<<std::endl;
 	if (t_LoopInThisThread) {
-//		LOG_FATAL << "Another EventLoop " << t_LoopInThisThread << " Exists in this Thread " << _tid;
-	}
+        //FATAL ERROR
+    }
 	else {
 		t_LoopInThisThread = this;
 	}
@@ -65,17 +60,17 @@ void EventLoop::loop() {
 	assert(_tid == curThreadId());
 	looping = true;
 	quit = false;
-//	::poll(NULL, 0, 5 * 1000);
+
 	while(!quit) {
 		activeChannels.clear();
 		pollReturnTime = poller->poll(kPollTimeMs,&activeChannels);
 		for(Channel* it : activeChannels) {
 			it->handleEvent(pollReturnTime);
 		}
-//		std::cout<<"wake up to do" <<std::endl;
+
 		doPendingFunctors();
 	}
-//	LOG_TRACE << "EventLoop " << this << " stop looping "
+
 	looping = false;
 }
 
@@ -108,9 +103,7 @@ void EventLoop::queueInLoop(const Functor& cb) {
 
 void EventLoop::updateChannel(Channel* channel) {
 	assert(channel->ownerLoop() == this);
-//	std::cout<<_tid<<" and " << curThreadId()<<std::endl;
 	assert(_tid == curThreadId());
-//	assertInLoopThread();
 	poller->updateChannel(channel);
 }
 
@@ -162,7 +155,6 @@ void EventLoop::doPendingFunctors() {
 	}
 
 	for(auto& it : funcs) {
-//		std::cout<<"DO!"<<std::endl;
 		it();
 	}
 	callPendingFunctors = false;
