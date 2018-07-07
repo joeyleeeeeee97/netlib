@@ -123,8 +123,8 @@ void TcpConnection::setTcpNoDelay(bool on) {
 
 void TcpConnection::connectDestroyed() {
 	loop_->assertInLoopThread();
-	std::cout<<kConnected<<std::endl;
-	std::cout<<state_<<std::endl;
+//	std::cout<<kConnected<<std::endl;
+//	std::cout<<state_<<std::endl;
 	assert(state_ == kConnected || state_ == kDisconnecting);//kDisConnecting);
 	setState(kDisconnected);
 	channel_->disableAll();
@@ -135,12 +135,11 @@ void TcpConnection::connectDestroyed() {
 }
 
 void TcpConnection::handleRead(Timestamp t) {
-	//char buf[65535];
-	//ssize_t n = :: read(channel_->fd(), buf, sizeof buf);
 	int savedErrno = 0;
 	ssize_t n = inputBuffer_.readFd(channel_->fd(), &savedErrno);
 	if(n > 0) {
-		messageCallback(shared_from_this(), &inputBuffer_, t);
+        if(messageCallback)
+            messageCallback(shared_from_this(), &inputBuffer_, t);
 	}
 	else if (n == 0) {
 		handleClose();

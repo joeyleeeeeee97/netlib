@@ -25,7 +25,8 @@ TESTS = test1 \
 	chat_server_v2\
 	chat_client\
 	chat_client_v2\
-
+	test_close\
+	test_timerwheel\
 
 all : $(TESTS)
 $(TESTS): $(HEADERS)
@@ -68,6 +69,9 @@ ttcp_server : test/ttcp_server.cc Socket.cc Acceptor.cc EventLoop.cc InetAddress
 
 buf_test : test/Buffer_test.cc Buffer.cc
 
+
+test_close : test/test_close.cc Socket.cc Acceptor.cc EventLoop.cc InetAddress.cc SocketsOps.cc ThreadFunc.cc Channel.cc Poller.cc Timestamp.cc  TimerQueue.cc Timer.cc TcpConnection.cc TcpServer.cc Buffer.cc
+
 netcat : test/netcat.cc Socket.cc Acceptor.cc EventLoop.cc InetAddress.cc SocketsOps.cc ThreadFunc.cc Channel.cc Poller.cc Timestamp.cc  TimerQueue.cc Timer.cc TcpConnection.cc TcpServer.cc Buffer.cc TcpClient.cc Connector.cc 
 
 memcached : test/mem_server.cc Socket.cc Acceptor.cc EventLoop.cc InetAddress.cc SocketsOps.cc ThreadFunc.cc Channel.cc Poller.cc Timestamp.cc  TimerQueue.cc Timer.cc TcpConnection.cc TcpServer.cc Buffer.cc MemSession.cc
@@ -83,6 +87,8 @@ chat_client: test/chat_client.cc Socket.cc Acceptor.cc EventLoop.cc InetAddress.
 
 
 chat_client_v2: test/chat_client02.cc Socket.cc Acceptor.cc EventLoop.cc InetAddress.cc SocketsOps.cc ThreadFunc.cc Channel.cc Poller.cc Timestamp.cc  TimerQueue.cc Timer.cc TcpConnection.cc TcpServer.cc Buffer.cc TcpClient.cc Connector.cc 
+
+test_timerwheel: test/Timer_server.cc Socket.cc Acceptor.cc EventLoop.cc InetAddress.cc SocketsOps.cc ThreadFunc.cc Channel.cc Poller.cc Timestamp.cc  TimerQueue.cc Timer.cc TcpConnection.cc TcpServer.cc Buffer.cc TcpClient.cc Connector.cc TimerWheel.cc
 
 clean:
 	rm -f $(TESTS)

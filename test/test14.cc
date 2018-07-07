@@ -36,7 +36,6 @@ void client_onConnection(const TcpConnectionPtr& conn) {
         a.id =  456;
 
 
-        cout<<str<<endl;
 
         conn->send(&a, sizeof(A));
         

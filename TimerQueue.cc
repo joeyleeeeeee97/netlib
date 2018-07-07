@@ -154,9 +154,6 @@ void TimerQueue::reset(std::vector<TimerQueue::Entry>& expired, Timestamp now) {
 			it.second->restart(now);
 			insert(std::move(it.second));
 		}
-		//else {
-		//	delete it->second;
-		//}
 	}
 
 	if(!timers.empty()) {

@@ -139,7 +139,7 @@ void Connector::handleWrite() {
         //       << err << " " << strerror_tl(err)<<std::endl;
 			retry(sockfd);
 		}
-		else if(sockets::isSelfConnect(sockfd)) {retry(sockfd);}
+		else if(sockets::isSelfConnect(sockfd)) {retry(sockfd);}//self connection 自连接
 		else {
 
 			setState(kConnected);

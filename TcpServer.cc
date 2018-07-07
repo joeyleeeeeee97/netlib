@@ -12,8 +12,7 @@ using namespace netlib;
 TcpServer::TcpServer(EventLoop* loop_, const InetAddress& listenAddr):loop(loop_),
 	name(listenAddr.toHostPort()),
 	acceptor(new Acceptor(loop_,listenAddr)),
-	started(false), nextConnId(1) {
-//	std::function<void()>
+	started(false), nextConnId(1), connectionCallback(), messageCallback(), writeCompleteCallback() {
 	NewConnectionCallback f = std::bind(&TcpServer::newConnection, this, std::placeholders::_1, std::placeholders::_2);
 	acceptor->setNewConnectionCallback(f);	
 }
@@ -39,11 +38,6 @@ void TcpServer::newConnection(int sockfd, const InetAddress& peerAddr) {
 	snprintf(buf , sizeof buf, "#%d", nextConnId);
 	++nextConnId;
 	std::string connName = name + buf;
-/*
-	std::cout  << "TcpServer::newConnection [" << name
-           << "] - new connection [" << connName
-           << "] from " << peerAddr.toHostPort();
-*/	
 	InetAddress localAddr(sockets::getLocalAddr(sockfd));
 	
 	TcpConnectionPtr conn(new TcpConnection(loop,connName, sockfd, localAddr, peerAddr));
